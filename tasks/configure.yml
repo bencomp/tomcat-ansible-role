@@ -40,13 +40,13 @@
 - name: Set production permissions
   include: set-production-permissions.yml
   when: >
-    (tomcat_installed|changed or tomcat_permissions_ensure_on_every_run) and
+    (tomcat_installed is changed or tomcat_permissions_ensure_on_every_run) and
     tomcat_permissions_production
 
 - name: Set non production permissions
   include: set-non-production-permissions.yml
   when: >
-    (tomcat_installed|changed or tomcat_permissions_ensure_on_every_run) and
+    (tomcat_installed is changed or tomcat_permissions_ensure_on_every_run) and
     tomcat_permissions_production == False
 
 - name: Configure service file {{ tomcat_service_name }}.service
@@ -54,9 +54,17 @@
     src: tomcat.service.j2
     dest: /usr/lib/systemd/system/{{ tomcat_service_name }}.service
   notify: restart tomcat
+  when: ansible_service_mgr != "upstart"
+
+- name: Configure service file {{ tomcat_service_name }}
+  template:
+    src: tomcat.j2
+    dest: /etc/init.d/{{ tomcat_service_name }}
+    mode: "a+x"
+  notify: restart tomcat
+  when: ansible_service_mgr == "upstart"
 
 - name: Enable tomcat service on startup
-  systemd:
+  service:
     name: "{{ tomcat_service_name}}"
     enabled: "{% if tomcat_service_enabled_on_startup %}yes{% else %}no{% endif %}"
-    daemon_reload: yes
