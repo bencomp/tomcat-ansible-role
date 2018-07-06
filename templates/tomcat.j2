@@ -25,9 +25,9 @@ export CATALINA_HOME={{ tomcat_install_path }}/{{ tomcat_service_name }}
 export JAVA_HOME={{ tomcat_java_home }}
 export CATALINA_PID={{ tomcat_install_path }}/{{ tomcat_service_name }}/temp/tomcat.pid
 export CATALINA_BASE={{ tomcat_install_path }}/{{ tomcat_service_name }}
-export CATALINA_OPTS=-Xms{{ tomcat_jvm_memory_percentage_xms*ansible_memtotal_mb//100 }}M -Xmx{{ tomcat_jvm_memory_percentage_xmx*ansible_memtotal_mb//100 }}M -server -XX:+UseParallelGC {% if tomcat_debug_mode == True %}-Xdebug -Xrunjdwp:transport=dt_socket,address={{ tomcat_port_debug }},server=y,suspend=n{% endif %}
+export CATALINA_OPTS="-Xms{{ tomcat_jvm_memory_percentage_xms*ansible_memtotal_mb//100 }}M -Xmx{{ tomcat_jvm_memory_percentage_xmx*ansible_memtotal_mb//100 }}M -server -XX:+UseParallelGC {% if tomcat_debug_mode == True %}-Xdebug -Xrunjdwp:transport=dt_socket,address={{ tomcat_port_debug }},server=y,suspend=n{% endif %}"
 
-export JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom
+export JAVA_OPTS="-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom"
 
 export TOMCAT_USER={{ tomcat_user }}
 
